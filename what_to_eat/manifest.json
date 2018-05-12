@@ -1,0 +1,27 @@
+//配置文件
+{
+    "manifest_version": 2,
+    //定义扩展的名称
+    "name": "吃什么?",
+    // 定义扩展的版本
+    "version": "1.0",
+    // 定义扩展的描述
+    "description": "解决吃什么的难题,从此不再纠结'吃什么'...",
+    // 定义 不同尺寸 图标的位置
+    "icons": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    },
+    // 定义放在工具栏的图标的位置
+    "browser_action": {
+        "default_icon": {
+            "19": "images/icon19.png",
+            "38": "images/icon38.png"
+        },
+        // 定义默认的标题
+        "default_title": "吃什么?",
+        // 定义运行扩展后默认打开的文件
+        "default_popup": "index.html"
+    }
+}

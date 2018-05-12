@@ -1,2 +1,179 @@
 # WhatToEat
 《中午吃什么？》制作一个简单的chrome扩展
+>有人找你解决一个小问题,你可能花几分钟编程,完美解决,但对方的计算机却没有程序运行的环境,有些老旧windows系统,甚至不能安装环境...
+>最好的解决方式,就是用js编写程序,直接放到对方的浏览器里运行,毕竟也没有那个浏览器不支持js,如果对方安装了chrome内核的浏览器,你可以直接把程序改成chrome扩展,打包发给对方,问题也就很轻松的完美解决了.
+---
+当然如果你的扩展足够好,你可以把扩展上传到google商店,让全世界的用户,都能使用你的程序.
+
+想做到这些,你得先知道chrome的扩展的开发流程是什么!
+
+> ![chrome商店](http://upload-images.jianshu.io/upload_images/3203841-57031c30085a42e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## 我们要做这样一个小玩意儿:
+
+![动图_效果演示](http://upload-images.jianshu.io/upload_images/3203841-ab96221d674bda93.gif?imageMogr2/auto-orient/strip)
+
+
+## 什么是扩展:
+可以简单把扩展理解为浏览器的插件.
+
+## 扩展的结构
+
+
+从结构来看,扩展像是一个配置文件(`manifest.json`),加一个完整的网页(包括html, css , js, images)
+![目录结构](http://upload-images.jianshu.io/upload_images/3203841-5e8536589f06d665.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## 先设计图标
+要设计5种尺寸的图标(作者不是专业的UI设计师,这里只是做个示范),建议导出为png格式.
+
+![图标设计](http://upload-images.jianshu.io/upload_images/3203841-f94476da2987acce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## 完成配置文件
+
+> 相当于填表,可以把下面的代码复制,然后替换为自己的信息,就可以用了!
+
+```json
+//配置文件
+{
+    "manifest_version": 2,
+    //定义扩展的名称
+    "name": "吃什么?",
+    // 定义扩展的版本
+    "version": "1.0",
+    // 定义扩展的描述
+    "description": "解决吃什么的难题,从此不再纠结'吃什么'...",
+    // 定义 不同尺寸 图标的位置
+    "icons": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    },
+    // 定义放在工具栏的图标的位置
+    "browser_action": {
+        "default_icon": {
+            "19": "images/icon19.png",
+            "38": "images/icon38.png"
+        },
+        // 定义默认的标题
+        "default_title": "吃什么?",
+        // 定义运行扩展后默认打开的文件
+        "default_popup": "index.html"
+    }
+}
+
+```
+
+## 写主程序(一个完整的网页):
+
+> 其实就是写一个带有后台逻辑的网页,我已经把代码相关注释标注完整,附在了文末...
+完整的资源文件也放在了文末网盘链接里,需要的可以自取...
+
+## 装载主程序:
+
+#### 1. 打开chrome浏览器,在地址栏键入`chrome://extentions`,回车
+
+![跳转扩展页面](http://upload-images.jianshu.io/upload_images/3203841-cea03afa40324e9b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+#### 2.打开开发者模式:
+
+![勾选开发者模式](http://upload-images.jianshu.io/upload_images/3203841-5a13c1cbe11644ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+#### 3.点击"加载已解压的扩展程序"
+
+![加载扩展](http://upload-images.jianshu.io/upload_images/3203841-8ddb3ac953a3e9f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+#### 选择最外层的文件夹
+
+
+![完整选取](http://upload-images.jianshu.io/upload_images/3203841-2615646fdb41dfe8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+#### 加载成功
+
+> ![加载成功](http://upload-images.jianshu.io/upload_images/3203841-96efc3cd7f46d53a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+
+## 运行效果:
+
+
+![动图_运行效果](http://upload-images.jianshu.io/upload_images/3203841-9c4dd2a7c91faea0.gif?imageMogr2/auto-orient/strip)
+
+
+#### 主要逻辑代码:
+
+>index.js
+
+```javascript
+window.onload = function () {
+
+    function choose_menu(){
+        var menus  = ["馄饨","拉面", "烩面", "热干面", "刀削面", "油泼面", "炸酱面", "炒面", "重庆小面", "米线", "酸辣粉", "土豆粉",
+            "螺狮粉", "凉皮儿", "麻辣烫肉夹馍", "羊肉汤", "炒饭", "盖浇饭", "卤肉饭", "烤肉饭", "黄焖鸡米饭", "驴肉火烧", "川菜",
+            "麻辣香锅", "火锅", "酸菜鱼", "烤串","披萨", "烤鸭", "汉堡", "炸鸡", "寿司", "蟹黄包", "粽子", "煎饼果子", "生煎", "炒年糕"];
+
+        // 生成一个0到1的随机数
+        random_num = Math.random();
+
+        //将随机数扩大N倍 (N为数组的长度), 然后取整,获得随机的索引!
+
+        menus_index = parseInt(random_num * (menus.length));
+
+        // 获得食物
+        the_menu = menus[menus_index];
+        // 返回食物
+        return the_menu
+
+    }
+
+    // 预先定义食物变量
+    var my_food;
+
+    //获取两个元素对象
+    var btn = document.getElementById("ibtn");
+    var best_food = document.getElementById("ifood");
+
+    // 点击按钮后的事件
+    btn.onclick = (function () {
+
+        // 获取新食物
+        var new_food;
+        new_food = choose_menu();
+        // 将这次的食物与上次对比,如果不相同,则替换为 新食物的名称
+        if (new_food != my_food){
+
+            my_food = new_food;
+
+        }
+        //如果和上次重复了,就自动再抽一次,如果又重复了(遇到几率这么低的情况,实属不易),建议这顿就吃个吧!
+
+        else{
+
+            new_food = choose_menu()
+
+        }
+
+        // 更新显示的食物名称
+
+        best_food.innerHTML= the_menu;
+
+        // 更新按钮显示的文字,只是第一次起作用
+        btn.innerHTML = "换一个";
+
+    })
+    
+};
+
+```
+
+>教程涉及到的资源我都通过百度网盘分享给大家,为了便于大家的下载,资源整合到了一张独立的帖子里,链接如下:
+
+>http://www.jianshu.com/p/4f28e1ae08b1
